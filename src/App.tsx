@@ -36,7 +36,10 @@ const App = () => (
             {/* Dashboard Routes */}
             <Route path="/issues" element={
               <ProtectedRoute>
-                <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+                <Suspense fallback={<div className="min-h-screen flex flex-col items-center justify-center gap-4">
+                  <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="w-32 h-32" />
+                  <p>Loading...</p>
+                </div>}>
                   <IssueManagement />
                 </Suspense>
               </ProtectedRoute>
@@ -44,7 +47,10 @@ const App = () => (
             
             <Route path="/users" element={
               <ProtectedRoute requiredRole="super_admin">
-                <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+                <Suspense fallback={<div className="min-h-screen flex flex-col items-center justify-center gap-4">
+                  <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="w-32 h-32" />
+                  <p>Loading...</p>
+                </div>}>
                   <UserManagement />
                 </Suspense>
               </ProtectedRoute>
@@ -52,7 +58,10 @@ const App = () => (
             
             <Route path="/notifications" element={
               <ProtectedRoute>
-                <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+                <Suspense fallback={<div className="min-h-screen flex flex-col items-center justify-center gap-4">
+                  <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="w-32 h-32" />
+                  <p>Loading...</p>
+                </div>}>
                   <Notifications />
                 </Suspense>
               </ProtectedRoute>
@@ -60,7 +69,10 @@ const App = () => (
             
             <Route path="/settings" element={
               <ProtectedRoute requiredRole="super_admin">
-                <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+                <Suspense fallback={<div className="min-h-screen flex flex-col items-center justify-center gap-4">
+                  <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="w-32 h-32" />
+                  <p>Loading...</p>
+                </div>}>
                   <Settings />
                 </Suspense>
               </ProtectedRoute>

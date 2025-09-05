@@ -69,8 +69,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {!isMobile && (
         <div className="w-64 border-r border-border bg-card p-4 flex flex-col">
           <div className="flex items-center space-x-2 mb-6">
-            <Shield className="h-8 w-8 text-primary" />
-            <h1 className="text-xl font-bold">Streetlight Admin</h1>
+            <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="h-10 w-10" />
+            <h1 className="text-xl font-bold">JAGMAG Dashboard</h1>
           </div>
           <NavItems />
           <div className="mt-auto pt-4">
@@ -108,8 +108,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 </SheetTrigger>
                 <SheetContent side="left" className="w-64">
                   <div className="flex items-center space-x-2 mb-6">
-                    <Shield className="h-8 w-8 text-primary" />
-                    <h1 className="text-xl font-bold">Streetlight Admin</h1>
+                    <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="h-10 w-10" />
+                    <h1 className="text-xl font-bold">JAGMAG Dashboard</h1>
                   </div>
                   <NavItems />
                   <div className="mt-8 pt-4">
@@ -135,8 +135,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             )}
             {isMobile && (
               <div className="flex items-center space-x-2">
-                <Shield className="h-6 w-6 text-primary" />
-                <h1 className="text-lg font-bold">Streetlight Admin</h1>
+                <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="h-8 w-8" />
+                <h1 className="text-lg font-bold">JAGMAG Dashboard</h1>
               </div>
             )}
             {!isMobile && <div />}

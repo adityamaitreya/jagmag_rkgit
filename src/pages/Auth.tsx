@@ -47,11 +47,11 @@ const Auth = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Shield className="h-12 w-12 text-primary" />
+            <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="h-16 w-16" />
           </div>
-          <CardTitle className="text-2xl">Streetlight Admin</CardTitle>
+          <CardTitle className="text-2xl">JAGMAG Dashboard</CardTitle>
           <CardDescription>
-            Access the admin dashboard for streetlight outage management
+            Access the JAGMAG dashboard for maintenance management
           </CardDescription>
         </CardHeader>
         <CardContent>
