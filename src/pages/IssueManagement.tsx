@@ -293,14 +293,14 @@ const IssueManagement = () => {
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search issues..."
-                  className="pl-8"
+                  className="pl-8 focus:ring-primary"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <div className="flex gap-2">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[140px]">
+                  <SelectTrigger className="w-[140px] border-primary/20 focus:ring-primary">
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -312,7 +312,7 @@ const IssueManagement = () => {
                   </SelectContent>
                 </Select>
                 <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-                  <SelectTrigger className="w-[140px]">
+                  <SelectTrigger className="w-[140px] border-primary/20 focus:ring-primary">
                     <SelectValue placeholder="Filter by priority" />
                   </SelectTrigger>
                   <SelectContent>
@@ -377,10 +377,10 @@ const IssueManagement = () => {
                           )}
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
+                            <Button variant="ghost" size="icon" className="hover:bg-primary hover:text-primary-foreground">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
                               <DropdownMenuSeparator />
@@ -537,7 +537,7 @@ const IssueManagement = () => {
                   });
                 }
               }
-            }}>Save Changes</Button>
+            }} className="bg-primary hover:bg-primary/90 text-primary-foreground">Save Changes</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -36,26 +36,26 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   const NavItems = () => (
     <div className="flex flex-col space-y-1">
-      <Link to="/" className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-accent">
+      <Link to="/" className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground transition-colors">
         <Home className="h-5 w-5" />
         <span>Dashboard</span>
       </Link>
-      <Link to="/issues" className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-accent">
+      <Link to="/issues" className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground transition-colors">
         <AlertTriangle className="h-5 w-5" />
         <span>Issue Management</span>
       </Link>
       {profile?.role === 'super_admin' && (
-        <Link to="/users" className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-accent">
+        <Link to="/users" className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground transition-colors">
           <Users className="h-5 w-5" />
           <span>User Management</span>
         </Link>
       )}
-      <Link to="/notifications" className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-accent">
+      <Link to="/notifications" className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground transition-colors">
         <Bell className="h-5 w-5" />
         <span>Notifications</span>
       </Link>
       {profile?.role === 'super_admin' && (
-        <Link to="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-accent">
+        <Link to="/settings" className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground transition-colors">
           <Settings className="h-5 w-5" />
           <span>Settings</span>
         </Link>
@@ -67,17 +67,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     <div className="min-h-screen bg-background flex">
       {/* Sidebar for desktop */}
       {!isMobile && (
-        <div className="w-64 border-r border-border bg-card p-4 flex flex-col">
+        <div className="w-64 border-r border-border bg-sidebar text-sidebar-foreground p-4 flex flex-col">
           <div className="flex items-center space-x-2 mb-6">
             <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="h-10 w-10" />
-            <h1 className="text-xl font-bold">JAGMAG Dashboard</h1>
+            <h2 className="text-xl font-bold text-primary">JAGMAG</h2>
           </div>
           <NavItems />
           <div className="mt-auto pt-4">
             <Separator className="mb-4" />
             <div className="flex items-center space-x-2 mb-2">
-              <User className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground truncate">
+              <User className="h-4 w-4 text-sidebar-foreground opacity-80" />
+              <span className="text-sm text-sidebar-foreground truncate">
                 {profile?.full_name || user?.email}
               </span>
             </div>
@@ -97,26 +97,26 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="border-b border-border bg-card p-4">
+        <header className="border-b border-border bg-background p-4">
           <div className="flex justify-between items-center">
             {isMobile && (
               <Sheet open={open} onOpenChange={setOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="outline" size="icon">
+                  <Button variant="outline" size="icon" className="hover:bg-primary hover:text-primary-foreground">
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-64">
+                <SheetContent side="left" className="w-64 bg-sidebar text-sidebar-foreground border-sidebar-border">
                   <div className="flex items-center space-x-2 mb-6">
-                    <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="h-10 w-10" />
-                    <h1 className="text-xl font-bold">JAGMAG Dashboard</h1>
-                  </div>
+                      <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="h-10 w-10" />
+                      <h2 className="text-xl font-bold text-primary">JAGMAG</h2>
+                    </div>
                   <NavItems />
                   <div className="mt-8 pt-4">
                     <Separator className="mb-4" />
                     <div className="flex items-center space-x-2 mb-2">
-                      <User className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground truncate">
+                      <User className="h-4 w-4 text-sidebar-foreground opacity-80" />
+                      <span className="text-sm text-sidebar-foreground truncate">
                         {profile?.full_name || user?.email}
                       </span>
                     </div>
@@ -125,7 +125,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                         {profile?.role?.replace('_', ' ')}
                       </span>
                     </div>
-                    <Button variant="outline" size="sm" onClick={handleSignOut} className="w-full">
+                    <Button variant="outline" size="sm" onClick={handleSignOut} className="w-full hover:bg-primary hover:text-primary-foreground">
                       <LogOut className="h-4 w-4 mr-2" />
                       Sign Out
                     </Button>
@@ -136,13 +136,13 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             {isMobile && (
               <div className="flex items-center space-x-2">
                 <img src="/jagmag-logo.svg" alt="JAGMAG Logo" className="h-8 w-8" />
-                <h1 className="text-lg font-bold">JAGMAG Dashboard</h1>
+                <h2 className="text-lg font-bold text-primary">JAGMAG Dashboard</h2>
               </div>
             )}
             {!isMobile && <div />}
             <div className="flex items-center space-x-2">
               {isMobile && (
-                <Button variant="outline" size="sm" onClick={handleSignOut}>
+                <Button variant="outline" size="sm" onClick={handleSignOut} className="hover:bg-primary hover:text-primary-foreground">
                   <LogOut className="h-4 w-4" />
                 </Button>
               )}
