@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      issues: {
+        Row: {
+          id: string
+          location: string
+          status: string
+          priority: string
+          reportedAt: string
+          description: string
+          reportedBy: string
+          assignedTo: string | null
+          hasPhoto: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          location: string
+          status: string
+          priority: string
+          reportedAt?: string
+          description: string
+          reportedBy: string
+          assignedTo?: string | null
+          hasPhoto?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          location?: string
+          status?: string
+          priority?: string
+          reportedAt?: string
+          description?: string
+          reportedBy?: string
+          assignedTo?: string | null
+          hasPhoto?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       jagmag_user: {
         Row: {
           created_at: string

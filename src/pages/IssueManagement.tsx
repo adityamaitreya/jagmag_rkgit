@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabaseService } from '@/services/supabaseService';
+import { useToast } from '@/hooks/use-toast';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -16,7 +18,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 interface Issue {
   id: string;
   location: string;
-  status: 'open' | 'in_progress' | 'resolved';
+  status: 'open' | 'in_progress' | 'resolved' | 'rejected';
   priority: 'high' | 'medium' | 'low';
   reportedAt: string;
   description: string;
@@ -99,6 +101,8 @@ const getStatusBadge = (status: string) => {
       return <Badge variant="warning">In Progress</Badge>;
     case 'resolved':
       return <Badge variant="outline">Resolved</Badge>;
+    case 'rejected':
+      return <Badge variant="secondary">Rejected</Badge>;
     default:
       return <Badge>Unknown</Badge>;
   }
@@ -135,6 +139,7 @@ const IssueManagement = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
+  const { toast } = useToast();
 
   const filteredIssues = issues.filter(issue => {
     // Search filter
@@ -152,23 +157,118 @@ const IssueManagement = () => {
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
-  const handleStatusChange = (issueId: string, newStatus: string) => {
-    setIssues(issues.map(issue =>
-      issue.id === issueId ? { ...issue, status: newStatus as Issue['status'] } : issue
-    ));
-    if (selectedIssue && selectedIssue.id === issueId) {
-      setSelectedIssue({ ...selectedIssue, status: newStatus as Issue['status'] });
+  const handleStatusChange = async (issueId: string, newStatus: string) => {
+    try {
+      // Check if we're using mock data (no database connection yet)
+      const isMockData = issues === mockIssues;
+      
+      if (!isMockData) {
+        // Update in the database
+        await supabaseService.updateData('issues', issueId, { status: newStatus }, 'id');
+      } else {
+        // If using mock data, simulate a delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+        // For demo purposes, throw an error to show the error toast
+        throw new Error('Cannot update status: The issues table does not exist in the database. This is demo data.');
+      }
+      
+      // Update local state
+      setIssues(issues.map(issue =>
+        issue.id === issueId ? { ...issue, status: newStatus as Issue['status'] } : issue
+      ));
+      
+      if (selectedIssue && selectedIssue.id === issueId) {
+        setSelectedIssue({ ...selectedIssue, status: newStatus as Issue['status'] });
+      }
+      
+      // Show success toast
+      toast({
+        title: 'Status Updated',
+        description: `Issue ${issueId} has been marked as ${newStatus.replace('_', ' ')}.`,
+        variant: 'default',
+      });
+    } catch (error) {
+      console.error('Error updating issue status:', error);
+      // Show error toast with more specific information
+      const errorMessage = error instanceof Error ? error.message : 'There was an error updating the issue status.';
+      toast({
+        title: 'Update Failed',
+        description: errorMessage,
+        variant: 'destructive',
+      });
     }
   };
 
-  const handleAssignAdmin = (issueId: string, adminEmail: string) => {
-    setIssues(issues.map(issue => 
-      issue.id === issueId ? { ...issue, assignedTo: adminEmail } : issue
-    ));
-    if (selectedIssue && selectedIssue.id === issueId) {
-      setSelectedIssue({ ...selectedIssue, assignedTo: adminEmail });
+  const handleAssignAdmin = async (issueId: string, adminEmail: string) => {
+    try {
+      // Check if we're using mock data (no database connection yet)
+      const isMockData = issues === mockIssues;
+      
+      if (!isMockData) {
+        // Update in the database
+        await supabaseService.updateData('issues', issueId, { assignedTo: adminEmail }, 'id');
+      } else {
+        // If using mock data, simulate a delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+        // For demo purposes, throw an error to show the error toast
+        throw new Error('Cannot assign admin: The issues table does not exist in the database. This is demo data.');
+      }
+      
+      // Update local state
+      setIssues(issues.map(issue => 
+        issue.id === issueId ? { ...issue, assignedTo: adminEmail } : issue
+      ));
+      
+      if (selectedIssue && selectedIssue.id === issueId) {
+        setSelectedIssue({ ...selectedIssue, assignedTo: adminEmail });
+      }
+      
+      // Show success toast
+      toast({
+        title: 'Admin Assigned',
+        description: adminEmail ? `Issue ${issueId} has been assigned to ${adminEmail}.` : `Issue ${issueId} has been unassigned.`,
+        variant: 'default',
+      });
+    } catch (error) {
+      console.error('Error assigning admin:', error);
+      // Show error toast with more specific information
+      const errorMessage = error instanceof Error ? error.message : 'There was an error assigning the admin to this issue.';
+      toast({
+        title: 'Assignment Failed',
+        description: errorMessage,
+        variant: 'destructive',
+      });
     }
   };
+  
+  // Function to fetch issues from the database
+  const fetchIssues = async () => {
+    try {
+      const data = await supabaseService.fetchData<Issue>('issues');
+      if (data && data.length > 0) {
+        setIssues(data);
+      } else {
+        // If no data is returned, use mock data
+        console.log('No issues found in database, using mock data');
+        setIssues(mockIssues);
+      }
+    } catch (error) {
+      console.error('Error fetching issues:', error);
+      // Show error toast with more information
+      toast({
+        title: 'Data Loading Notice',
+        description: 'Using demo data. The issues table may not exist in the database yet.',
+        variant: 'default',
+      });
+      // Fallback to mock data if there's an error
+      setIssues(mockIssues);
+    }
+  };
+  
+  // Load issues when component mounts
+  useEffect(() => {
+    fetchIssues();
+  }, []);
 
   const openIssueDetails = (issue: Issue) => {
     setSelectedIssue(issue);
@@ -208,6 +308,7 @@ const IssueManagement = () => {
                     <SelectItem value="open">Open</SelectItem>
                     <SelectItem value="in_progress">In Progress</SelectItem>
                     <SelectItem value="resolved">Resolved</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select value={priorityFilter} onValueChange={setPriorityFilter}>
@@ -274,13 +375,23 @@ const IssueManagement = () => {
                               <ImageIcon className="h-4 w-4" />
                             </Button>
                           )}
-                          <Button 
-                            variant="ghost" 
-                            size="icon"
-                            onClick={() => openIssueDetails(issue)}
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={() => openIssueDetails(issue)}>View Details</DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={() => handleStatusChange(issue.id, 'open')}>Mark as Open</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleStatusChange(issue.id, 'in_progress')}>Mark as In Progress</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleStatusChange(issue.id, 'resolved')}>Mark as Resolved</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleStatusChange(issue.id, 'rejected')}>Mark as Rejected</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -350,6 +461,7 @@ const IssueManagement = () => {
                     <SelectItem value="open">Open</SelectItem>
                     <SelectItem value="in_progress">In Progress</SelectItem>
                     <SelectItem value="resolved">Resolved</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -383,7 +495,49 @@ const IssueManagement = () => {
           
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>Close</Button>
-            <Button>Save Changes</Button>
+            <Button onClick={async () => {
+              if (selectedIssue) {
+                try {
+                  // Check if we're using mock data (no database connection yet)
+                  const isMockData = issues === mockIssues;
+                  
+                  if (!isMockData) {
+                    // Save all changes to the database
+                    await supabaseService.updateData('issues', selectedIssue.id, {
+                      status: selectedIssue.status,
+                      assignedTo: selectedIssue.assignedTo,
+                      // Add other fields that might have changed
+                    });
+                  } else {
+                    // If using mock data, simulate a delay
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    // For demo purposes, throw an error to show the error toast
+                    throw new Error('Cannot save changes: The issues table does not exist in the database. This is demo data.');
+                  }
+                  
+                  // Show success toast
+                  toast({
+                    title: 'Changes Saved',
+                    description: `Issue ${selectedIssue.id} has been updated successfully.`,
+                    variant: 'default',
+                  });
+                  
+                  setIsDetailsOpen(false);
+                  // Refresh the issues list
+                  fetchIssues();
+                } catch (error) {
+                  console.error('Error saving changes:', error);
+                  
+                  // Show error toast with more specific information
+                  const errorMessage = error instanceof Error ? error.message : 'There was an error saving the changes.';
+                  toast({
+                    title: 'Save Failed',
+                    description: errorMessage,
+                    variant: 'destructive',
+                  });
+                }
+              }
+            }}>Save Changes</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
